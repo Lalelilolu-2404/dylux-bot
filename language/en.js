@@ -58,6 +58,18 @@ exports.simn = `do you want to chat for a while?\n\nReply with`;
 exports.simmsg = `(Your message)\n\n📌 Example : `;
 exports.chatboton = `✅ You activated *ChatBot* \n Which means we can chat unlimitedly 😊`;
 exports.chatbotoff = `✅ *ChatBot* disabled`; 
+exports.pptt = `Please select`;
+exports.exple = `Example`;
+exports.emt = `Tie`;
+exports.gst = `Won`;
+exports.pdt = `You lost`;
+exports.pptuser = `You`;
+exports.papel = `paper`;
+exports.tijera = `scissor`;
+exports.piedra = `stone`;
+exports.foll = `Follow me in Instagram \nhttps://www.instagram.com/fg98._ `;
+exports.plays = `Enter a song title`;
+exports.playm = `The file is too large, music playback was canceled, the maximum file size is`;
 
 // -- Saying time
 exports.night = 'Good night'

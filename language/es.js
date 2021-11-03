@@ -58,6 +58,18 @@ exports.simn = `quieres charlar un rato?\n\nResponde con`;
 exports.simmsg = `(Tu mensaje)\n\n📌 Ejemplo : `;
 exports.chatboton = `✅ Activaste *ChatBot* \n Lo que significa que podemos charlar ilimitadamente 😊`;
 exports.chatbotoff = `✅ *ChatBot* desactivado`; 
+exports.pptt = `Seleccione`;
+exports.exple = `Ejemplo`;
+exports.emt = `Empate`;
+exports.gst = `Ganaste`;
+exports.pdt = `Perdiste`;
+exports.pptuser = `Tú`;
+exports.papel = `papel`;
+exports.tijera = `tijera`;
+exports.piedra = `piedra`;
+exports.foll = `Sígueme en Instagram \nhttps://www.instagram.com/fg98._`;
+exports.plays = `Ingresa el título de una canción`;
+exports.playm = `El archivo es demasiado grande, la reproducción de música se canceló, el tamaño máximo del archivo es de`;
 
 // -- Decir tiempo
 exports.night = 'Buenas noches'

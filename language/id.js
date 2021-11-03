@@ -58,6 +58,18 @@ exports.simn = `apakah kamu ingin mengobrol sebentar?\n\nBalas dengan`;
 exports.simmsg = `(Pesanmu)\n\n📌 Contoh : `;
 exports.chatboton = `✅ Anda mengaktifkan *ChatBot* \n Yang berarti kita dapat mengobrol tanpa batas 😊`;
 exports.chatbotoff = `✅ *ChatBot* dinonaktifkan`; 
+exports.pptt = `Silahkan pilih`;
+exports.exple = `Contoh`;
+exports.emt = `Mengikat`;
+exports.gst = `Won`;
+exports.pdt = `Kamu kalah`;
+exports.pptuser = `Anda`;
+exports.papel = `kertas`;
+exports.tijera = `gunting`;
+exports.piedra = `batu`;
+exports.foll = `Ikuti saya di Instagram \nhttps://www.instagram.com/fg98._`;
+exports.plays = `Masukkan judul lagu`;
+exports.playm = `File terlalu besar, pemutaran musik dibatalkan, ukuran file maksimum adalah`;
 
 // -- Saying time
 exports.night = 'Selamat Malam';

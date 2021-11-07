@@ -70,6 +70,15 @@ exports.piedra = `piedra`;
 exports.foll = `Sígueme en Instagram \nhttps://www.instagram.com/fg98._`;
 exports.plays = `Ingresa el título de una canción`;
 exports.playm = `El archivo es demasiado grande, la reproducción de música se canceló, el tamaño máximo del archivo es de`;
+exports.listgp = `LISTA de Grupos`;
+exports.calidad = `Calidad`;
+exports.tamaño = `Tamaño`;
+exports.pfo = `Elija un formato\n\nSi tiene problemas  con el comando use`;
+exports.pafo = `Seleccione la música que desea descargar`;
+exports.pvfo = `Seleccione el video que desea descargar`;
+exports.titlp = `Título`;
+exports.timp = `Duración`;
+exports.viep = `Vistas`;
 
 // -- Decir tiempo
 exports.night = 'Buenas noches'
@@ -90,6 +99,7 @@ exports.noprem = '✳️ El usuario aún no es un usuario premium.';
 exports.ban = '✳️ El estado de usuario ha sido prohibido antes';
 exports.noban = '✳️ El usuario no tiene estado prohibido';
 exports.isadmin = '✳️ El bot no puede iniciar sesión como administrador';
+exports.oversize = '⚠️ El tamaño del archivo excede el tamaño especificado, descárguelo usted mismo a través del siguiente enlace\n*🔗 Link* : ';
 
 // -- texto
 exports.notag = '✳️ Etiqueta a un miembro del grupo';
@@ -165,19 +175,22 @@ exports.Thisoff = (value) => {
 return `✳️ *${value}* se desactivo antes`;
 };
 exports.OnorOff = '✳️ Repita agregando on/off';
-exports.antilink = '❎ No permitimos enlaces de otros grupos!\nLo siento seras expulsado';
+exports.antilink = '⚠️ Se te detecta enviando un enlace de un grupo de whatsapp';
 
-exports.setwel = (value) => {
+exports.setwel = (value) => { 
   return `✳️ Ingrese el mensaje de *bienvenida*
+
 *📌 Ejemplo:*
 /setwelcome Bienvenido @user  a @group
- 
+
+Tag : @user 
 Nombre : @name
 Bio : @bio
 Fecha : @date
 Nombre de Grupo : @group
+Descripción : @desc
 
-*Ejemplos para cada función*` + value;
+*Ejemplos para cada función*\n` + value;
 };
 
 exports.setbye = (value) => {
@@ -186,21 +199,19 @@ exports.setbye = (value) => {
 *📌 Ejemplo:*
 /setbye Adios  @user
 
-*Ejemplos para cada función*` + value;
+*Ejemplos para cada función*\n` + value;
 };
 
 exports.setweldone = (value, fungsi) => {
-  return `✅ Mensaje de Bienvenida Cambiada\n\n`
-+ value + `\n\n*Ejemplos para cada función*` + fungsi;
+  return `✅ Se estableció el mensaje de  *Bienvenida*`;
 };
 
 exports.setbyedone = (value, fungsi) => {
-  return `✅ Mensaje de Depedida Cambiada\n\n`
-+ value + `\n\n*Ejemplos para cada función*` + fungsi;
+  return `✅ Se estableció el mensaje de  *Despedida*`;
 };
 //--
 exports.default = (value) => {
-  return value + ' Volver a la configuración inicial';
+  return value + ' Vouelve a la configuración inicial';
 };
 
 exports.main = (value) => {

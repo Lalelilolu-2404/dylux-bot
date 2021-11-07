@@ -43,10 +43,15 @@ exports.menu = (v) => {
 ▢ ${v}translate <lang><text>
 └──────────────
 ┌─⊷ *BUSQUEDA* ❳
-▢ ${v}playstore 
+▢ ${v}playstore
+▢ ${v}ytsearch
 └──────────────
 ┌─⊷ *DOWNLOAD* 
 ▢ ${v}play
+▢ ${v}play2
+▢ ${v}playvid
+▢ ${v}ytmp3 <link yt>
+▢ ${v}ytmp4 <link yt>
 ▢ ${v}igdl <link>
 ▢ ${v}tiktok <link>
 ▢ ${v}tiktoknowm <link>
@@ -76,6 +81,11 @@ exports.menu = (v) => {
 ▢ ${v}checkvote
 └──────────────
 ┌─⊷ *ADMIN* 
+▢ ${v}setwelcome
+▢ ${v}seybye
+▢ ${v}delwelcome
+▢ ${v}delbye
+▢ ${v}simulate <welcome/bye>
 ▢ ${v}group <open/close>
 ▢ ${v}resetlink
 ▢ ${v}online
@@ -88,8 +98,9 @@ exports.menu = (v) => {
 ▢ ${v}setdesc <text>
 ▢ ${v}add <numero>
 ▢ ${v}kick @user
-▢ ${v}promover @user
-▢ ${v}degradar @user
+▢ ${v}okick <reply msg>
+▢ ${v}promote @user
+▢ ${v}demote @user
 ▢ ${v}warn @user
 ▢ ${v}delwarn @user
 ▢ ${v}warns @user
@@ -102,6 +113,7 @@ exports.menu = (v) => {
 ▢ ${v}link
 ▢ ${v}infogp
 ▢ ${v}profile
+▢ ${v}invite <549xxxx> 
 └──────────────
 ┌─⊷ *OWNER* 
 ▢ ${v}addpremium @user
@@ -109,6 +121,7 @@ exports.menu = (v) => {
 ▢ ${v}ban @user
 ▢ ${v}unban @user
 ▢ ${v}view
+▢ ${v}grouplist
 ▢ ${v}update
 ▢ ${v}setppbot
 ▢ ${v}setfakethumb

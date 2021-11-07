@@ -1,4 +1,3 @@
-
 // todas las funciones se han simplificado lo más posible si encuentra un error / error tipográfico por escrito, hágamelo saber en el problema
 
 
@@ -31,10 +30,12 @@ const translate = require('@iamtraction/google-translate');
 const ffmpeg = require("fluent-ffmpeg");
 const toMs = require('ms');
 const fs = require("fs");
+const fetch = require('node-fetch');
 const similarity = require('similarity');
 const threshold = 0.72;
 const fgx = require('./result/index');
 const package = require('./package.json');
+const yts = require('yt-search');
 //-- library
 const simple = require('./whatsapp/connecting');
 const { fetchJson, fakeText, getBuffer } = require('./library/fetcher');
@@ -60,15 +61,15 @@ const {
   WIT
 } = require('./library/functions');
 
-// funciones 
+// functions
 
 const {
   direc,
   addImage,
   addVideo,
   addStiker,
-  addReport, 
-  addAudio
+  addAudio,
+  addReport
 } = require('./functions/directory');
 
 
@@ -124,11 +125,11 @@ const {
   cekAntidelete,
   addDetect,
   delDetect,
-  cekDetect, 
+  cekDetect,
   addViewonce,
   delViewonce,
   cekViewonce
-} = require('./functions/group'); // cambiar y recuperar datos en ./database/group
+} = require('./functions/group'); 
 
 const {
   st,
@@ -136,10 +137,11 @@ const {
   addAuthor,
   addPackname,
   addWm,
-  addGametime,
+  addGamewaktu,
   addPoingame,
   addCmd
-} = require('./functions/setting-bot'); // cambiar datos en ./database/setting-bot
+} = require('./functions/setting-bot'); 
+
 const {
   Wel,
   addCustomWelcome,
@@ -152,45 +154,41 @@ const {
 } = require('./functions/welcome');
 
 const { msgFilter } = require('./functions/antispam')
-const { menu } = require('./functions/menu'); 
+const { menu } = require('./functions/menu'); // 
 const { espa, ind, eng, } = require('./language/index');
 
 // funciones de  ./functions/setting-bot
-let ownerNumber = st.ownerNumber; // número de propietario
-let prefix = st.prefix; // prefijo
-let listprefix = st.listprefix; // lista de  prefiijos
+let ownerNumber = st.ownerNumber; 
 let isPoingame = st.poinGame; 
 let isGametime = st.gameTime; 
 let isPoindefect = st.poinDefect; 
-let isNama = st.nameB; // nombre del bot
-let isAuthor = st.author; // El autor se utiliza en la función de Stickers
-let isPackname = st.packname; // El nombre del paquete se utiliza en la función de Stickers
-let isWm = st.wm; // wm se usa para la descripción en el botón de mensaje
-let isTotalcmd = st.totalcommand; // información sobre el número de comandos utilizados por los usuarios
+let isNama = st.nama; 
+let isAuthor = st.author; 
+let isPackname = st.packname; 
+let isWm = st.wm; 
+let isTotalcmd = st.totalcommand; 
 
 // -- thumbnail
-let thumb = fs.readFileSync('./temp/fg.jpg'); 
-
+let thumbfg = fs.readFileSync('./temp/fg.jpg'); 
 let fakethumb = fs.readFileSync('./temp/fake.jpg'); 
 
 let baterai = {
     baterai: 0,
     cas: false
 };
-//- Prefijos
+
 let Use = {
   prefix: '/',
   multi: true,
   nopref: false,
   onepref: false
 };
-//-
+
 module.exports = Fg = async (Fg, mek) => {
   try {
     if (!mek.hasNewMessage) return;
     mek = mek.messages.all()[0];
     if (!mek.message) return;
-    
     //--Bot self
    //if(mek.key.fromMe) return; // Eliminalo para que el Bot sea self
    
@@ -205,32 +203,38 @@ module.exports = Fg = async (Fg, mek) => {
     const { text, extendedText, contact, location, liveLocation, image, video, sticker, document, audio, product } = MessageType;
     const { wa_version, mcc, mnc, os_version, device_manufacturer, device_model } = Fg.user.phone;
 //--
-     const cmd = 
+    const cmd = 
     type === 'conversation' && mek.message.conversation ? mek.message.conversation :
     type === 'imageMessage' && mek.message.imageMessage.caption ? mek.message.imageMessage.caption : 
     type === 'videoMessage' && mek.message.videoMessage.caption ? mek.message.videoMessage.caption : 
     type === 'extendedTextMessage' && mek.message.extendedTextMessage.text ? mek.message.extendedTextMessage.text : 
     type === 'listResponseMessage' && mek.message[type].singleSelectReply.selectedRowId ? mek.message[type].singleSelectReply.selectedRowId :
     type === 'buttonsResponseMessage' && mek.message[type].selectedButtonId ? mek.message[type].selectedButtonId : ''.slice(1).trim().split(/ +/).shift().toLowerCase();
-    
+
       if(Use.multi){
-        var prefix = /^[°•π÷×¶∆£¢€¥®™✓=|~zZ+×_*!#%^&./\\©^]/.test(cmd) ? cmd.match(/^[°•π÷×¶∆£¢€¥®™✓=|~xzZ+×_*!#,|`÷?;:%^&./\\©^]/gi) : '-';
+        var prefix = /^[°•π÷×¶∆£¢€¥®™✓=|~zZ+×_*!#%^&./\\©^]/.test(cmd) ? cmd.match(/^[°•π÷×¶∆£¢€¥®™✓=|~xzZ+×_*!#,|÷?;:%^&./\\©^]/gi) : '-';
       } else if (Use.nopref) {
         prefix = '';
       } else if (Use.onepref) {
         prefix = Use.prefix;
         }
 
-    const body = 
+     const body = 
     type === 'conversation' && mek.message.conversation.startsWith(prefix) ? mek.message.conversation : 
     type === 'imageMessage' && mek.message.imageMessage.caption.startsWith(prefix) ? mek.message.imageMessage.caption : 
     type === 'videoMessage' && mek.message.videoMessage.caption.startsWith(prefix) ? mek.message.videoMessage.caption : 
     type === 'extendedTextMessage' && mek.message.extendedTextMessage.text.startsWith(prefix) ? mek.message.extendedTextMessage.text : 
     type === 'listResponseMessage' && mek.message[type].singleSelectReply.selectedRowId ? mek.message[type].singleSelectReply.selectedRowId :
     type === 'buttonsResponseMessage' && mek.message[type].selectedButtonId.startsWith(prefix) ? mek.message[type].selectedButtonId : ''
-    
-     const budy = (type === 'conversation') ? mek.message.conversation : (type === 'extendedTextMessage') ? mek.message.extendedTextMessage.text : '';
-     const command = body.slice(1).trim().split(/ +/).shift().toLowerCase();
+     
+     const budy = 
+     type === 'conversation' ? mek.message.conversation : 
+     type === 'extendedTextMessage' ? mek.message.extendedTextMessage.text :
+     type === 'imageMessage' ? mek.message.imageMessage.caption : 
+     type === 'videoMessage' ? mek.message.videoMessage.caption : 
+     type === 'stickerMessage' ? 'Sticker' :
+     type === 'audioMessage' ? 'Audio' : '';
+     const command = body.replace(prefix, '').trim().split(/ +/).shift().toLowerCase();
      const args = body.trim().split(/ +/).slice(1);
      const more = String.fromCharCode(8206);
      const readMore = more.repeat(4000);
@@ -238,10 +242,9 @@ module.exports = Fg = async (Fg, mek) => {
      const isCmd = body.startsWith(prefix);
      const totalchat = await Fg.chats.all();
      const botNumber = Fg.user.jid;
-     const botNumero = botNumber.replace('@s.whatsapp.net', '') // número del bot   
      
-//-- Grupo Metadata
-      const isGroup = from.endsWith('@g.us');
+//-- Group Metadata
+     const isGroup = from.endsWith('@g.us');
      const sender = isGroup ? mek.participant : mek.key.remoteJid;
      const groupMetadata = isGroup ? await Fg.groupMetadata(from) : '';
      const groupName = isGroup ? groupMetadata.subject : '';
@@ -249,7 +252,7 @@ module.exports = Fg = async (Fg, mek) => {
      const groupId = isGroup ? groupMetadata.jid : '';
      const groupMembers = isGroup ? groupMetadata.participants : '';
      const groupAdmins = isGroup ? getGroupAdmins(groupMembers) : '';
-     const isYo = mek.key.fromMe ? true : false
+     const isBot = mek.key.fromMe ? true : false
      const isOwner = ownerNumber.includes(sender) || false;
      const isBotAdmins = groupAdmins.includes(botNumber) || false;
      const isAdmins = groupAdmins.includes(sender) || false;
@@ -257,6 +260,7 @@ module.exports = Fg = async (Fg, mek) => {
      let dia = mek.quoted ? mek.quoted.sender : mek.mentionedJid && mek.mentionedJid[0] ? mek.mentionedJid[0] : false;
      const pushname = Fg.getName(who);
      const about = (await Fg.getStatus(sender).catch(console.error) || {}).status || ''
+    
 
 //--- comprobar la información del usuario
      let isPoin = cekPoin(sender);
@@ -276,7 +280,7 @@ module.exports = Fg = async (Fg, mek) => {
      let isViewonce = cekViewonce(from);
      let msg = cekBahasa(sender);
      
-          // -- Idioma 
+     // -- Idioma 
      if (msg === "es") {
        msg = espa;
      } else if (msg === "en") {
@@ -329,15 +333,15 @@ Fg.on('CB:action,,battery', json => {
 	baterai.cas = b;
 });
      
-// detect quoted 
+// detected quoted 
      const isMedia = type === "imageMessage" || type === "videoMessage";
      const isQuotedImage = type === 'extendedTextMessage' && content.includes('imageMessage');
- 	const isQuotedVideo = type === 'extendedTextMessage' && content.includes('videoMessage');
-     const isQuotedAudio = type === 'extendedTextMessage' && content.includes('audioMessage');
-	 const isQuotedSticker = type === 'extendedTextMessage' && content.includes('stickerMessage');
-     const isQuotedDocument = type === 'extendedTextMessage' && content.includes('documentMessage');
-	 const isQuotedLocation = type === 'extendedTextMessage' && content.includes('locationMessage');
-     const isQuotedextendedText = type === 'extendedTextMessage' && content.includes('extendedTextMessage');
+ 	 	 const isQuotedVideo = type === 'extendedTextMessage' && content.includes('videoMessage');
+		 const isQuotedAudio = type === 'extendedTextMessage' && content.includes('audioMessage');
+		 const isQuotedSticker = type === 'extendedTextMessage' && content.includes('stickerMessage');
+		 const isQuotedDocument = type === 'extendedTextMessage' && content.includes('documentMessage');
+	   const isQuotedLocation = type === 'extendedTextMessage' && content.includes('locationMessage');
+		 const isQuotedextendedText = type === 'extendedTextMessage' && content.includes('extendedTextMessage');
 
 
 // comando de registro de la consola cuando está en un chat privado
@@ -360,23 +364,37 @@ Fg.on('CB:action,,battery', json => {
       console.log(" De :", color(pushname, "yellow"), "Fecha :", bgcolor(tanggal, 'grey'));
       console.log(" Mensaje :", color(budy, "orange"), "MessageType :", bgcolor(type, "orange"));
     }
-
+    
 // Anti spam que se suma al spam :v
    /* if (isCmd && msgFilter.isFiltered(from)) {
          return m.reply('⚠️ Espera 2 segundos antes de usar otro comando')
 					}
-    if (isCmd && !isOwner && !isYo) msgFilter.addFilter(from*/
+    if (isCmd && !isOwner && !isBot) msgFilter.addFilter(from*/
 
 
-if (budy) addUser(sender); // agregar información de usuario a la base de datos
-if (budy) addGroup(from); // agregar información de grupo a la base de datos
-if (isCmd) addCmd() // aumentar el número total de comandos cuando el usuario usa el comando
-if (isCmd) addPoin(sender); // agregar puntos de usuario al usar comandos
+// auto respon
+/*Dbot = ['@'+Fg.user.jid.split('@')[0]]
+for ( var L of Dbot){
+  if(!mek.isBaileys && budy.match(L)){
+   capt = 'Hola @'+sender.split('@')[0]+' Aquí estoy necesitas ayuda? '
+   return Fg.send2ButtonLoc(from, thumbfg, capt, 'Opciones ', '⦙☰ Menu', prefix + 'menu', '⏍ Info', prefix + 'info', false, {
+          contextInfo: {
+            mentionedJid: Fg.parseMention(capt),
+          },
+        });
+  }
+}*/
+
+if (budy) addUser(sender); // 
+if (isGroup && budy) addGroup(from); 
+if (isCmd) addCmd() 
+if (isCmd) addPoin(sender); 
+if (isGroup && budy) addCustomWelcome(from)
 
 // suma puntos al nivel y acumula para subir de nivel
 const Amount = isPoindefect * (Math.pow(2, isLevel) - 1)
 if (Amount <= isPoin) {
-           await addLevel(sender) // puntos acumulados para subir de nivel
+           await addLevel(sender) 
           }
 
 // comando especial cuando el estado fuera de línea  está activado en el grupo
@@ -384,7 +402,7 @@ switch (command) {
   
   case 'offline': // escribe  offline el bot no responderá a ningún comando en ciertos grupos
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
+    if(!isAdmins && !isOwner && !isBot) return m.reply(msg.admin)
     if (isOffline === true ) {
       return m.reply('✅ Bot offline')
     }
@@ -394,7 +412,7 @@ switch (command) {
 
   case 'online':
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
+    if(!isAdmins && !isOwner && !isBot) return m.reply(msg.admin)
     if (isOffline === false ) {
       return m.reply('✅ Bot online')
     }
@@ -410,18 +428,19 @@ if (isBanned) return; // los usuarios con estado baneado no podrán usar el coma
 
 switch (command) { 
  
- case 'menu': 
+  case 'menu': 
  case 'help':
-    capt = `${msg.hi} *${pushname}* ${ucapanWaktu}
+    capt = `────  *DyLux  ┃ ᴮᴼᵀ*  ────
+    
+${msg.hi} *${pushname}* ${ucapanWaktu}
     
 ▷ *${msg.lvl}* : ${isLevel}
-▷ *💰Coins* : ${isPoin}
 ▷ *Premium* : ${prem}
 ▷ *Prefix* : ${modepref}
 ${readMore}
 ${menu(prefix)} 
 `
-    Fg.send3ButtonLoc(from, thumb, capt, `▢ Thank to ©Nurutomo\n▢ *DyLux  ┃ ᴮᴼᵀ*\n▢ *Total Hits* : ${isTotalcmd}\n▢ *Runtime* : ${kyun(process.uptime())}\n\n${msg.foll}`, '✆ Owner', `${prefix}owner`, '⏍ Info', `${prefix}info`, `⌬ ${msg.gp}s`, `${prefix}grupos`)
+    Fg.send3ButtonLoc(from, thumbfg, capt, `▢ Thank to ©Nurutomo\n▢ *DyLux  ┃ ᴮᴼᵀ*\n▢ *Total Hits* : ${isTotalcmd}\n▢ *Runtime* : ${kyun(process.uptime())}\n\n${msg.foll}`, '✆ Owner', `${prefix}owner`, '⏍ Info', `${prefix}info`, `⌬ ${msg.gp}s`, `${prefix}grupos`)
     break
     
     case 'grupos': 
@@ -438,17 +457,6 @@ https://chat.whatsapp.com/CDUqNRu5Kh5KY5uqQI0BKE
 `
 m.reply(gps)
 break 
-    
-  case 'restart': 
-  case 'reiniciar': 
-    if(!isOwner && !isYo) return m.reply(msg.owner)
-    m.reply(msg.restart)
-try {
-  process.send('reset')
-} catch (e) {
-  m.reply('...')
-}
-  break
  
   case 'ping':
     const timestamp = speed();
@@ -483,7 +491,7 @@ case 'developer':
 number = '59172945992@s.whatsapp.net'
     capt = `▢ ${msg.num} : @${number.split('@')[0]}\n\n`
     capt += '▢ Instagram : https://www.instagram.com/fg98._'
-    await Fg.fakeLink(from, capt, thumb, `${msg.click}`, 'https://www.instagram.com/fg98._', mek)
+    await Fg.fakeLink(from, capt, thumbfg, `${msg.click}`, 'https://www.instagram.com/fg98._', mek)
    /* Fg.sendContact(from, '59172945992', 'owner', {
 	 key: {
           fromMe: false,
@@ -510,9 +518,9 @@ number = '59172945992@s.whatsapp.net'
 					}
 				}
    uptime = process.uptime()
-   teks = `_*INFO BOT*_
+   teks = `≡  *INFO BOT*
    
-*≡ ESTADO*
+   *ESTADO*
 ▢ Contactos : ${Object.keys(Fg.contacts).length}
 ▢ Total Chats : *${totalchat.length}* 
 ▢ *${totalchat.length - giid.length}* Chats privados
@@ -523,6 +531,13 @@ number = '59172945992@s.whatsapp.net'
 *≡ DISPOSITIVO*
 
 ▢ Versi Wa : ${Fg.user.phone.wa_version}
+
+*≡ OWNER*
+▢ Instagram : https://www.instagram.com/fg98._
+▢ WhatsApp : wa.me/59172945992 
+
+*≡ SCRIPT*
+▢ Git : ${package.homepage} 
 ` 
   m.reply(teks)
    break
@@ -735,7 +750,7 @@ case "s":
     push = pickRandom(woman)
     m.reply(msg.wait)
     go = await fgx.pinterest(push)
-    pin = pickRandom(go)
+    pin = pickRandom(go) 
     if(!pin) return m.reply('Error')
     Fg.sendButtonImg(from, await getBuffer(pin), `✅ *${msg.resulf}*\n`, msg.next(command), `▷▷ ${msg.next2}`, `${prefix + command}`, mek)
  break
@@ -778,7 +793,7 @@ case "s":
    break
 
  case 'listreport':
-   if (!isOwner && !isYo) return m.reply(msg.owner)
+   if (!isOwner && !isBot) return m.reply(msg.owner)
    report = '*LIST REPORT*'
    for (var R of direc.report){
      report += `\n\n▢ Id : @` + R.id.split('@')[0]
@@ -913,7 +928,7 @@ break
      }
      break
      case 'setfakethumb':
-   if(!isOwner && !isYo) return m.reply(msg.owner)
+   if(!isOwner && !isBot) return m.reply(msg.owner)
    if(isMedia || isQuotedImage) {
    q = m.quoted ? m.quoted : m 
    thumb = await q.download() 
@@ -957,6 +972,29 @@ break
         return m.reply('⚠️ Error')
       })
    break
+   
+   case 'ytsearch':
+   case 'yts':
+    if(!value) return m.reply(msg.notext)
+				try {
+		        	var aramas = await yts(value);
+		   			} catch {
+		        	return await Fg.sendMessage(from, 'Error!', MessageType.text, dload)
+		    		}
+		    		aramat = aramas.all 
+		    		var tbuff = await getBuffer(aramat[0].image)
+		    		var ytresult = '';
+		    		ytresult += '「 *YOUTUBE SEARCH* 」'
+		    		ytresult += '\n________________________\n\n'
+		   			aramas.all.map((video) => {
+		        	ytresult += '📌 *Título :* ' + video.title + '\n'
+		            ytresult += '*🔗 Link* : ' + video.url + '\n'
+		            ytresult += '*⏳ Duración* : ' + video.timestamp + '\n'
+		            ytresult += '*📤 Publicado* : ' + video.ago + '\n________________________\n\n'
+		    		});
+		    		ytresult += '─── DyLux ┃ ᴮᴼᵀ ───'
+		    		 Fg.sendMessage(from, tbuff, image, {thumbnail:fakethumb , quoted: mek, caption: ytresult})
+		            break
    
    case "playstore":
      if(!value) return m.reply(msg.notext)
@@ -1013,10 +1051,126 @@ break
      Fg.sendMessage(from, buffer, video, {quoted: mek, caption: msg.done})
    }
    break
+   
+   case 'play': 
+   if (!value) return m.reply(`✳️ *${msg.plays}*\n\n📌${msg.exple} *${prefix + command}* Lil Peep broken smile`)
+   url = await yts(value);
+   linkp = url.all 
+   if(!linkp) return ('Error')
+ // img = await getBuffer(linkp[0].image)
+ img = await (await fetch('https://i.ibb.co/CnHx2Fr/fgmy.jpg')).buffer()
+   music = `≡ *FG MUSIC*
+┌──────────────
+▢ *${msg.titlp}*  : ${linkp[0].title}
+▢ *${msg.timp}* : ${linkp[0].timestamp}
+▢ *${msg.viep}* : ${linkp[0].views} 
+└──────────────` 
+ Fg.send2ButtonLoc(from, img, music, `${msg.pfo} *${prefix}play2*\n`, '⎙ MP3', `${prefix}fgmp3 ${linkp[0].url}`, '⎙ MP4', `${prefix}fgmp4 ${linkp[0].url}`)
+ break
+   
+    case 'play2': 
+   if (!value) return m.reply(`✳️ *${msg.plays}*\n\n📌${msg.exple} *${prefix + command}* Lil Peep broken smile`)
+   url = await yts(value);
+   link = url.all 
+   if(!link) return ('Error')
+ // img = await getBuffer(link[0].image)
+ img = await (await fetch('https://i.ibb.co/CnHx2Fr/fgmy.jpg')).buffer()
+   music = `≡ *PLAY MUSIC*
+   
+▢ *RESULTADOS*
+≡ Music 1 
+┌──────────────
+▢ *${msg.titlp}*  : ${link[0].title}
+▢ *${msg.timp}* : ${link[0].timestamp}
+└──────────────
+≡ Music 2
+┌──────────────
+▢ *${msg.titlp}*  : ${link[1].title}
+▢ *${msg.timp}* : ${link[1].timestamp}
+└──────────────
+≡ Music 3
+┌──────────────
+▢ *${msg.titlp}*  : ${link[2].title}
+▢ *${msg.timp}* : ${link[2].timestamp}
+└──────────────` 
+ Fg.send3ButtonLoc(from, img, music, `${msg.pafo}`, '⎙ Music 1', `${prefix}fgmp3 ${link[0].url}`, '⎙ Music 2', `${prefix}fgmp3 ${link[1].url}`, '⎙ Music 3', `${prefix}fgmp3 ${link[2].url}`)
+ break
+ 
+ case 'playvid': 
+ case 'playmp4': 
+ case 'playvideo': 
+   if (!value) return m.reply(`✳️ *${msg.plays}*\n\n📌${msg.exple} *${prefix + command}* Lil Peep broken smile`)
+   url = await yts(value);
+   link = url.all 
+   if(!link) return ('Error')
+ // img = await getBuffer(link[0].image)
+ img = await (await fetch('https://i.ibb.co/CnHx2Fr/fgmy.jpg')).buffer()
+   music = `≡ *PLAY VIDEO*
+   
+▢ *RESULTADOS*
+≡ Video 1 
+┌──────────────
+▢ *${msg.titlp}*  : ${link[0].title}
+▢ *${msg.timp}* : ${link[0].timestamp}
+└──────────────
+≡ Video 2
+┌──────────────
+▢ *${msg.titlp}*  : ${link[1].title}
+▢ *${msg.timp}* : ${link[1].timestamp}
+└──────────────
+≡ Video 3
+┌──────────────
+▢ *${msg.titlp}*  : ${link[2].title}
+▢ *${msg.timp}* : ${link[2].timestamp}
+└──────────────` 
+ Fg.send3ButtonLoc(from, img, music, `${msg.pvfo}`, '⎙ Video 1', `${prefix}fgmp4 ${link[0].url}`, '⎙ Video 2', `${prefix}fgmp4 ${link[1].url}`, '⎙ Video 3', `${prefix}fgmp4 ${link[2].url}`)
+ break
+ 
+	case 'ytmp3':
+	case 'fgmp3':
+   if(!value) return m.reply(msg.nolink('youtube'));
+   if(isUrl(value) && !value.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)) return m.reply('Link invalido');
+   m.reply(msg.wait)
+   resp = await fgx.yta(value)
+   buff = await getBuffer(resp.link)
+   if (!buff) return m.reply('⚠️ Error')
+   if(Number(resp.size.split(' MB')[0]) >= 99.00) {
+     axios.get(`https://tinyurl.com/api-create.php?url=${resp.link}`).then((G) => {
+     return m.reply(msg.oversize + G.data)
+     })
+   } else {
+     img = await getBuffer(resp.thumb)
+     capt = `▢ ${msg.calidad} : ${resp.quality}
+▢ ${msg.tamaño} : ${resp.size}`
+     Fg.adReplyAudio(from, buff, document, resp.judul, capt, img, value, mek)
+   }
+	break
+	
+	case 'ytmp4': 
+	case 'fgmp4': 
+   if(!value) return m.reply(msg.nolink('youtube'));
+   if(isUrl(value) && !value.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)) return m.reply('Link invalido');
+   m.reply(msg.wait)
+   resv = await fgx.ytv(value)
+   buff = await getBuffer(resv.link)
+   if (!buff) return m.reply('⚠️ Error')
+   if(Number(resv.size.split(' MB')[0]) >= 99.00) {
+     axios.get(`https://tinyurl.com/api-create.php?url=${resv.link}`).then((G) => {
+     return m.reply(msg.oversize + G.data)
+     })
+   } else {
+     img = await getBuffer(resv.thumb)
+     capt = `▢ ${msg.calidad} : ${resv.quality}
+▢ ${msg.tamaño} : ${resv.size}`
+     await Fg.adReplyVideo(from, buff, document, resv.judul, capt, img, value, mek)
+   }
+	break
+
+   
 
   case 'hidetag':
   case 'notify':
-        if(!isOwner && !isYo && !isAdmins) return m.reply(msg.admin)
+        if(!isOwner && !isBot && !isAdmins) return m.reply(msg.admin)
         if (!isGroup) return m.reply(msg.group);
         if(!m.quoted) {
           tag = value
@@ -1037,7 +1191,7 @@ break
         
         case 'tagall':
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
+    if(!isAdmins && !isOwner && !isBot) return m.reply(msg.admin)
     mention = groupMembers.map(u => u.jid) 
     m.reply('TAG ALL\n\n' + mention.map((v, i) => i + 1 + '- @' + v.replace(/@.+/, '')).join`\n`, null, {
     contextInfo: { mentionedJid: mention }
@@ -1046,7 +1200,7 @@ break
   
   case 'join':
   case 'entrabot':
-    if(!isOwner && !isYo) return
+    if(!isOwner && !isBot) return
     if(!value) return m.reply(`✳️Ingrese el link de tu Grupo`) 
     join = value.split('https://chat.whatsapp.com/')[1]
     await Fg.acceptInvite(join).then((res) => {
@@ -1080,7 +1234,7 @@ https://chat.whatsapp.com/${linkgp}`
  
  case 'warn':
     if(!isGroup) return m.reply(msg.group)
-    if(!isOwner && !isYo && !isAdmins) return m.reply(msg.admin)
+    if(!isOwner && !isBot && !isAdmins) return m.reply(msg.admin)
     if(!dia) return m.reply(msg.notag)
     await addWarn(dia)
     warn = cekWarn(dia)
@@ -1094,7 +1248,7 @@ https://chat.whatsapp.com/${linkgp}`
 
   case 'delwarn':
     if(!isGroup) return m.reply(msg.group)
-    if(!isOwner && !isYo && !isAdmins) return m.reply(msg.admin)
+    if(!isOwner && !isBot && !isAdmins) return m.reply(msg.admin)
     if(!dia) return m.reply(msg.notag)
     warn = cekWarn(dia)
     if (warn === 0) {
@@ -1113,7 +1267,7 @@ https://chat.whatsapp.com/${linkgp}`
     case 'addpremium':
     case 'addprem': 
     if(!isGroup) return m.reply(msg.group)
-    if(!isOwner && !isYo) return m.reply(msg.owner)
+    if(!isOwner && !isBot) return m.reply(msg.owner)
     prem = cekPremium(dia)
     if (prem === true) {
       return m.reply(msg.isprem)
@@ -1125,7 +1279,7 @@ https://chat.whatsapp.com/${linkgp}`
   case 'delpremium':
   case 'delprem':
     if(!isGroup) return m.reply(msg.group)
-    if(!isOwner && !isYo) return m.reply(msg.owner)
+    if(!isOwner && !isBot) return m.reply(msg.owner)
     prem = cekPremium(dia)
     if (prem === false) {
       return m.reply(msg.noprem)
@@ -1137,7 +1291,7 @@ https://chat.whatsapp.com/${linkgp}`
     case 'banned':
     case 'ban':
     if(!isGroup) return m.reply(msg.group)
-    if(!isOwner && !isYo) return m.reply(msg.owner)
+    if(!isOwner && !isBot) return m.reply(msg.owner)
     ban = cekBanned(dia)
     if (ban === true) {
       return m.reply(msg.ban)
@@ -1149,7 +1303,7 @@ https://chat.whatsapp.com/${linkgp}`
   case 'unbanned':
   case 'unban':
     if(!isGroup) return m.reply(msg.group)
-    if(!isOwner && !isYo) return m.reply(msg.owner)
+    if(!isOwner && !isBot) return m.reply(msg.owner)
     ban = cekBanned(dia)
     if (ban === false) {
       return m.reply(msg.noban)
@@ -1199,7 +1353,7 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
   case 'setppbot':
     if(!isGroup) return m.reply(msg.group)
     if(!isBotAdmins) return m.reply(msg.botadmin)
-    if(!isOwner && !isYo) return m.reply(msg.admin)
+    if(!isOwner && !isBot) return m.reply(msg.admin)
     if(isMedia || isQuotedImage) {
     q = m.quoted ? m.quoted : m 
     let img = await q.download() 
@@ -1219,7 +1373,7 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
     m.reply(msg.desk(value))
     break
     
-    case 'kick':
+    /*case 'kick':
     if(!isGroup) return m.reply(msg.group)
     if(!isBotAdmins) return m.reply(msg.botadmin)
     if(!isAdmins && !isOwner) return m.reply(msg.admin)
@@ -1233,12 +1387,36 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
           },
         });
     await Fg.groupRemove(from, [dia])
-    break
+    break*/
+    case 'kick':
+if(!isGroup) return m.reply(msg.group)
+    if(!isBotAdmins) return m.reply(msg.botadmin)
+    if(!isAdmins && !isOwner) return m.reply(msg.admin)
+if(!value)return m.reply(msg.notag)
+y = value.split('@')[1] + '@s.whatsapp.net'
+capt = msg.kick(y)
+    m.reply(capt, null, {
+          contextInfo: {
+            mentionedJid: Fg.parseMention(capt),
+          },
+        });
+Fg.groupRemove(from, [y])
+break
+
+case 'okick':
+			if(!isGroup) return m.reply(msg.group)
+    if(!isBotAdmins) return m.reply(msg.botadmin)
+    if(!isAdmins && !isOwner) return m.reply(msg.admin)
+if (mek.message.extendedTextMessage === undefined || mek.message.extendedTextMessage === null) return reply('✳️ Responde a un mensaje!')
+			kick = mek.message.extendedTextMessage.contextInfo.participant
+		    Fg.groupRemove(from, [kick])
+						m.reply(msg.done)
+                    break 
 
   case 'add':
     if(!isGroup) return m.reply(msg.group)
     if(!isBotAdmins) return m.reply(msg.botadmin)
-    if(!isOwner && !isYo) return m.reply(msg.owner)
+    if(!isOwner && !isBot) return m.reply(msg.owner)
     //if(!dia) return m.reply(msg.notag)
     user = value.replace(/[^0-9]/g, '')+"@s.whatsapp.net"
     try {
@@ -1259,6 +1437,22 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
       m.reply(msg.nonum)
     }
     break 
+    
+    //-- envía en link de invitación a un número
+    case 'invite':
+    case 'invitar':
+    if(!isGroup) return m.reply(msg.group)
+    if(!isBotAdmins) return m.reply(msg.botadmin)
+    if(!value) return m.reply(msg.nonum)
+    users = value.replace(/[^0-9]/g, '')+"@s.whatsapp.net"
+    ini = await Fg.groupInviteCode(from)
+    link = 'https://chat.whatsapp.com/'+ini 
+    Fg.sendMessage(users, "@"+sender.split("@")[0]+"\n Un admin te invita a unirte a este grupo\n"+link, text, {
+          contextInfo: {
+            mentionedJid: [sender],
+          }})
+          m.reply(msg.done)
+    break
     
     case 'promote':
     case 'promover':
@@ -1297,7 +1491,7 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
   case 'welcome':
   case 'bienvenida':
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
+    if(!isAdmins && !isOwner && !isBot) return m.reply(msg.admin)
     if(!isBotAdmins) return m.reply(msg.botadmin)
     if(!value) return m.reply(msg.OnorOff)
     if (value.toLowerCase() === "on") {
@@ -1315,7 +1509,7 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
     
     case 'detect':
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
+    if(!isAdmins && !isOwner && !isBot) return m.reply(msg.admin)
     if(!isBotAdmins) return m.reply(msg.botadmin)
     if(!value) return m.reply(msg.OnorOff)
     if (value.toLowerCase() === "on") {
@@ -1333,7 +1527,7 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
     
   case 'antidelete':
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
+    if(!isAdmins && !isOwner && !isBot) return m.reply(msg.admin)
     if(!isBotAdmins) return m.reply(msg.botadmin)
     if(!value) return m.reply(msg.OnorOff)
     if (value.toLowerCase() === "on") {
@@ -1352,7 +1546,7 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
     case 'antilink':
     case 'antilinkwha':
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
+    if(!isAdmins && !isOwner && !isBot) return m.reply(msg.admin)
     if(!isBotAdmins) return m.reply(msg.botadmin)
     if(!value) return m.reply(msg.OnorOff)
     if (value.toLowerCase() === "on") {
@@ -1370,7 +1564,7 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
     
     case 'antiviewonce':
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
+    if(!isAdmins && !isOwner && !isBot) return m.reply(msg.admin)
     if(!isBotAdmins) return m.reply(msg.botadmin)
     if(!value) return m.reply(msg.OnorOff)
     if (value.toLowerCase() === "on") {
@@ -1388,6 +1582,7 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
     
     //-- auto Simsimi 
     case 'chatbot': 
+     if(!isGroup) return m.reply(msg.group)
     if(!value) return m.reply(msg.OnorOff)
     if (value.toLowerCase() === "on") {
       if(isChatbot === true ) return m.reply(msg.Thison(command.toUpperCase()))
@@ -1413,7 +1608,7 @@ Fg.groupSettingChange(from, GroupSettingChange.messageSend, true)
     case 'fetch':
  case 'result':
  case 'view':
-   if(!isOwner && !isYo) return m.reply(msg.owner)
+   if(!isOwner && !isBot) return m.reply(msg.owner)
    let res = await fetchText(value)
    m.reply(res)
    break
@@ -1472,6 +1667,19 @@ gpp = await getBuffer(ppimg)
 Fg.sendMessage(from, gpp, image, { thumbnail: fakethumb, quoted: mek, caption: infogpp})
 break 
 
+case 'grouplist':
+case 'listgp':
+case 'listgroup':
+   if(!isOwner) return m.reply(msg.owner)
+   capt = totalchat.filter(z => z.jid.endsWith('g.us')).map((z, i) =>`
+────────────
+*${i + 1}.* ${Fg.getName(z.jid)}
+• *🛡️ID* : ${z.jid}
+• *🏮Estado* : ${z.read_only ? 'Abandonado' : 'Dentro'}
+────────────`).join`\n\n`
+  m.reply(`≡ *${msg.listgp}*\n\n${capt}`)
+  break  
+  
 case 'voting':
 case 'votacion':
    if(!isGroup) return m.reply(msg.group)
@@ -1615,7 +1823,7 @@ case 'riddle':  //acertijo
  break
  
  case 'setprefix':
-    if (!isOwner && !isYo) return m.reply(msg.owner)
+    if (!isOwner && !isBot) return m.reply(msg.owner)
     //if (!value) return m.reply(msg.notext)
    if((args[0]) == 'multi'){
       if(Use.multi) return m.reply(msg.Thison(command.toUpperCase()))
@@ -1642,7 +1850,7 @@ case 'riddle':  //acertijo
     
     case 'update':
     case 'actualizar':
-if (!isOwner && !isYo) return m.reply(msg.owner)
+if (!isOwner && !isBot) return m.reply(msg.owner)
 gfg = `git remote set-url origin https://github.com/FG98F/dylux-bot.git && git pull `
 exec(`${gfg}`, (err, stdout) => {
 if (err) return m.reply(err) 
@@ -1650,17 +1858,28 @@ if (stdout) m.reply(`✅ ${msg.updatef} :\n\n${stdout}`)
 })
 break
 
+case 'restart': 
+  case 'reiniciar': 
+    if(!isOwner && !isBot) return m.reply(msg.owner)
+    m.reply(msg.restart)
+try {
+  process.send('reset')
+} catch (e) {
+  m.reply('...')
+}
+  break
 
 case 'setwelcome':
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
-    about = (await Fg.getStatus(sender).catch(console.error) || {}).status || ''
+    if(!isAdmins && !isOwner) return m.reply(msg.admin)
     fungsi = `
-@tag = @${sender.split('@')[0]}
-@nama = ${pushname}
-@about = ${about}
-@tanggal = ${tanggal}
-@group = ${groupName}`
+@user = @${sender.split('@')[0]}
+@name = ${pushname}
+@bio = ${about}
+@date = ${tanggal}
+@group = ${groupName}
+@desc = ${groupDesc}
+`
     if(!value) return m.reply(msg.setwel(fungsi))
      await setCustomWelcome(from, value)
      m.reply(msg.setweldone(value, fungsi))
@@ -1668,13 +1887,12 @@ case 'setwelcome':
 
   case 'setbye':
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
-    about = (await Fg.getStatus(sender).catch(console.error) || {}).status || ''
+    if(!isAdmins && !isOwner) return m.reply(msg.admin)
 fungsi = `
-@tag = @${sender.split('@')[0]}
-@nama = ${pushname}
-@about = ${about}
-@tanggal = ${tanggal}
+@user = @${sender.split('@')[0]}
+@name = ${pushname}
+@bio = ${about}
+@date = ${tanggal}
 @group = ${groupName}`
     if(!value) return m.reply(msg.setbye(fungsi))
     await setCustomBye(from, value)
@@ -1684,7 +1902,7 @@ fungsi = `
 case 'delwelcome':
   case 'delbye':
     if(!isGroup) return m.reply(msg.group)
-    if(!isAdmins && !isOwner && !isYo) return m.reply(msg.owner)
+    if(!isAdmins && !isOwner && !isBot) return m.reply(msg.owner)
     if(command.includes('welcome')){
       await delCustomWelcome(from)
       m.reply(msg.default('WELCOME'))
@@ -1693,26 +1911,42 @@ case 'delwelcome':
       m.reply(msg.default('BYE'))
     }
   break
-  
- case 'simulate':
+
+  case 'simulate':
  case 'simular':
    if(!isGroup) return m.reply(msg.group)
-   if(!isAdmins && !isOwner && !isYo) return m.reply(msg.admin)
+   if(!isAdmins && !isOwner && !isBot) return m.reply(msg.admin)
    if(!value) return m.reply('Lista de eventos\n\n- Welcome\n-Bye')
    welc = getCustomWelcome(from)
    bye = getCustomBye(from)
    tag = '@'+sender.split('@')[0]
-   about = (await Fg.getStatus(sender).catch(console.error) || {}).status || ''
+   try {
+	      ppimg = await Fg.getProfilePicture(who);
+	    } catch {
+	      ppimg = 'https://i.ibb.co/PZNv21q/Profile-FG98.jpg';
+	    }
+	welm = await getBuffer(ppimg)
    if(value.toLowerCase() === 'welcome') {
-     capt = welc.replace('@user', tag).replace('@name', pushname).replace('@bio', about).replace('@fecha', tanggal).replace('@group', groupName)
-     Fg.adReply(from, capt, text, 'Bienvenido nuevo', 'al grupo' + groupMembers.length + ' Group ' + groupName, thumb, 'https://www.instagram.com/p/CTKtDqeBgY5/?utm_medium=copy_link');
+     capt = welc.replace('@user', tag).replace('@name', pushname).replace('@bio', about).replace('@date', tanggal).replace('@desc', groupDesc).replace('@group', groupName) 
+ // Fg.sendMessage(from, welm, image, {contextInfo: {  mentionedJid: [sender]}, thumbnail: fakethumb, quoted: mek, caption: capt})
+Fg.send2ButtonLoc(from, welm, capt, 'Sígueme en Instagram\nhttps://www.instagram.com/fg98._', '⦙☰ MENU', '/menu', '⏍ INFO GP', '/infogp', false, {
+	      contextInfo: { 
+            mentionedJid: Fg.parseMention(capt)
+	      } 
+	    }); //--
      } else if(value.toLowerCase() === 'bye') {
-       capt = bye.replace('@user', tag).replace('@name', pushname).replace('@bio', about).replace('@fecha', tanggal).replace('@group', groupName)
-       m.reply(capt)
+       capt = bye.replace('@user', tag).replace('@name', pushname).replace('@bio', about).replace('@date', tanggal).replace('@group', groupName)       
+  //Fg.sendMessage(from, welm, image, {contextInfo: {  mentionedJid: [sender]}, thumbnail: fakethumb, quoted: mek, caption: capt})
+   Fg.sendButtonLoc(from, welm, capt, 'Sígueme en Instagram\nhttps://www.instagram.com/fg98._', '👋🏻', 'unde', false, {
+	      contextInfo: { 
+            mentionedJid: Fg.parseMention(capt)
+	      } 
+	    });//---
      } else {
        m.reply('Lista de eventos\n\n- Welcome\n- Bye')
      }
   break
+
   
   case 'attp':
 	          if(!value) return m.reply(msg.notext)
@@ -1775,31 +2009,18 @@ case 'bot':
     }
     break
     
-    case 'play':
-if (args.length < 1) return m.reply(`✳️ *${msg.plays}*\n\n📌${msg.exple} *${prefix + command}* Lil Peep broken smile`)
-m.reply(msg.wait)
-  pl = await fetchJson(`https://api.zeks.xyz/api/ytplaymp3?apikey=WRhywqyYC0doYNeqTZymcB2SjrT&q=${value}`)
-  judul = pl.result.title
-  lagu = pl.result.url_audio
-  size = pl.result.size
-  foto = pl.result.thumbnail
-  durasi = pl.result.duration
-  capt = `≡ *PLAY*
-▢ *Título* : ${judul}
-▢ *Peso* : ${size}
-▢ *Duracion* : ${durasi}`
-  if(Number(size.split(' MB')[0]) >= 99.00) return reply(`✳️ ${msg.playm} 99 mb`)
-  thumb = await getBuffer(foto)
-  Fg.sendMessage(from, thumb, image, {quoted: mek, caption: capt})
-  mp3 = await getBuffer(lagu)
-  Fg.sendMessage(from, mp3, document, {mimetype: 'audio/mp4', filename: `${judul}.mp3`, quoted: mek})
-  break
+    
+  
+  /*case 'say':
+    if(!value) return m.reply(msg.notext)
+    Fg.sendMessage(from, value, text)
+    break*/
    
 //---
   default:
   
     if (budy.startsWith('$')){
-      if (!mek.key.fromMe && !isOwner && !isYo) return;
+      if (!mek.key.fromMe && !isOwner && !isBot) return;
       qur = budy.slice(2);
       exec(qur, (err, stdout) => {
         if (err) return m.reply(`‣  ${err}`);
@@ -1810,7 +2031,7 @@ m.reply(msg.wait)
           }
           
     if (budy.startsWith('>')){
-      if (!mek.key.fromMe && !isOwner && !isYo) return;
+      if (!mek.key.fromMe && !isOwner && !isBot) return;
       try {
         Fg.sendMessage(from, "‣ "+JSON.stringify(eval(budy.slice(2)),null,'\t'), text, {quoted: mek});
         } catch(err) {
@@ -1831,7 +2052,7 @@ m.reply(msg.wait)
         m.reply(msg.addwarn)
         cek = await cekWarn(sender)
         if(cek === 3) {
-          await Fg.groupRemove(from, sender)
+          await Fg.groupRemove(from, [sender])
           await delWarn(sender, 3)
         }
       }

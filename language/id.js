@@ -70,6 +70,15 @@ exports.piedra = `batu`;
 exports.foll = `Ikuti saya di Instagram \nhttps://www.instagram.com/fg98._`;
 exports.plays = `Masukkan judul lagu`;
 exports.playm = `File terlalu besar, pemutaran musik dibatalkan, ukuran file maksimum adalah`;
+exports.listgp = `DAFTAR Grup`;
+exports.calidad = `Kualitas`;
+exports.tamaño = `Ukuran`;
+exports.pfo = `Pilih format\n\nJika Anda memiliki masalah dengan perintah, gunakan`;
+exports.pafo = `Pilih musik yang ingin Anda unduh`;
+exports.pvfo = `Pilih video yang ingin Anda unduh`;
+exports.titlp = `Kualifikasi`;
+exports.timp = `Durasi`;
+exports.viep = `Tampilan`;
 
 // -- Saying time
 exports.night = 'Selamat Malam';
@@ -90,6 +99,7 @@ exports.noprem = `✳️ Maaf kak Hanya User Premium yang bisa menggunakan fitur
 exports.ban = '✳️ User yang kaka masukan sudah dibanned sebelumnya,silahkan masukan perintah ini jika user ini belum terbanned oleh bot';
 exports.noban = '✳️ User ini tidak memiliki status banned didalam database bot';
 exports.isadmin = '✳️ Maaf bot tidak bisa mengeluarkan admin';
+exports.oversize = 'Ukuran file melebihi ukuran yang di tentukan, download sendiri melalui link dibawah\n*🔗 Link* : ';
 
 // -- text
 exports.notag = '✳️ Coba tag salah satu anggota group';
@@ -167,38 +177,39 @@ return `✳️ *${value}* belum menyala sebelumnya`;
 exports.OnorOff = '✳️ Silahkan ulangi dengan menambahkan on/off';
 exports.antilink = 'Kamu terdeteksi mengirimkan link whatsapp group lain';
 
-exports.setwel = (value) => {
-  return `✳️ Silahkan ulangi dengan menambahkan text
-*📌 Contoh :*
-!setwelcome Selamat Datang @user di @group
+exports.setwel = (value) => { 
+  return `✳️ Masukkan pesan dari *Selamat datang*
+
+*📌 Contoh:*
+/setwelcome Selamat datang @user  ke @group
+ 
+Tag : @user 
 Nama : @name
 Bio : @bio
 Tanggal : @date
+Nama grup : @group
+Keterangan : @desc
 
-Jangan lupa memperkenalkan diri + baca deskripsi group ya kak
-
-*Contoh untuk setiap fungsi*` + value;
+*Contoh untuk setiap fungsi*\n` + value;
 };
 
 exports.setbye = (value) => {
-  return `✳️ Silahkan ulangi dengan menambahkan text
+  return `✳️ Masukkan pesan *Perpisahan*
+  
+*📌 Contoh:*
+/setbye Selamat tinggal  @user
 
-*📌 Contoh :*
-!setbye Selamat tinggal @user
-
-*Contoh untuk setiap fungsi*` + value;
+*Contoh untuk setiap fungsi*\n` + value;
 };
 
 exports.setweldone = (value, fungsi) => {
-  return `✅ Berhasil mengganti welcome\n\n`
-+ value + `\n\n*Contoh untuk setiap fungsi*` + fungsi;
+  return `✅ *Selamat datang* kumpulan pesan`;
 };
 
 exports.setbyedone = (value, fungsi) => {
-  return `✅ Berhasil mengganti bye\n\n`
-+ value + `\n\n*Contoh untuk setiap fungsi*` + fungsi;
+  return `✅ *Perpisahan* kumpulan pesan`;
 };
-
+//--
 exports.default = (value) => {
   return value + ' Kembali ke pengaturan awal';
 };

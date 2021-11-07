@@ -70,6 +70,15 @@ exports.piedra = `stone`;
 exports.foll = `Follow me in Instagram \nhttps://www.instagram.com/fg98._ `;
 exports.plays = `Enter a song title`;
 exports.playm = `The file is too large, music playback was canceled, the maximum file size is`;
+exports.listgp = `LIST of Groups`;
+exports.calidad = `Quality`;
+exports.tamaño = `Size`;
+exports.pfo = `Choose a format\n\nIf you have problems with the command use`;
+exports.pafo = `Select the music you want to download`;
+exports.pvfo = `Select the video you want to download`;
+exports.titlp = `Title`;
+exports.timp = `Duration`;
+exports.viep = `Views`;
 
 // -- Saying time
 exports.night = 'Good night'
@@ -90,6 +99,7 @@ exports.noprem = '✳️ The user is not yet a premium user';
 exports.ban = '✳️ User status has been banned before';
 exports.noban = '✳️ User does not have banned status';
 exports.isadmin = '✳️ Bot can\'t log admin';
+exports.oversize = '⚠️ The file size exceeds the specified size, please download it yourself via the link below\n*🔗 Link* : ';
 
 // -- text
 exports.notag = '✳️ Tag a group member';
@@ -167,38 +177,39 @@ return `✳️ *${value}* not turned on before`;
 exports.OnorOff = '✳️ Please repeat by adding on/off';
 exports.antilink = '❎ We do not allow links from other groups!\nSorry you will be expelled';
 
-exports.setwel = (value) => {
-  return `✳️ Please repeat by adding text
-*📌 Example :*
-!setwelcome Welcome @user in @group
+exports.setwel = (value) => { 
+  return `✳️ Enter your *welcome* message
+
+*📌 Example:*
+/setwelcome Welcome @user to  @group
+ 
+Tag : @user 
 Name : @name
 Bio : @bio
 Date : @date
+Group Name : @group
+Description : @desc
 
-Don't forget to read the group description, okay?
-
-*Examples for each function*` + value;
+*Examples for each function*\n` + value;
 };
 
 exports.setbye = (value) => {
-  return `✳️ Please repeat by adding text
+  return `✳️ Enter your *Farewell* message
   
-*📌 Example :*
-!setbye Goodbye @user
+*📌 Example:*
+/setbye  goodbye  @user
 
-*Examples for each function*` + value;
+*Examples for each function*\n` + value;
 };
 
 exports.setweldone = (value, fungsi) => {
-  return `✅ Successfully changed welcome\n\n`
-+ value + `\n\n*Examples for each function*` + fungsi;
+  return `✅ *Welcome* message set`;
 };
 
 exports.setbyedone = (value, fungsi) => {
-  return `✅ Successfully replaced bye\n\n`
-+ value + `\n\n*Examples for each function*` + fungsi;
+  return `✅ *bye* message set`;
 };
-
+//--
 exports.default = (value) => {
   return value + ' Return to initial settings';
 };
